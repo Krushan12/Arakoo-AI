@@ -1,6 +1,12 @@
 # Task Board - Modern Task Management
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue)](https://arakoo-ai.vercel.app/)
+
 A modern, real-time task management application built with Next.js, Firebase, and DnD Kit. Organize your tasks efficiently with a beautiful and intuitive interface.
+
+## 🌐 Live Demo
+
+Check out the live demo at [https://arakoo-ai.vercel.app/](https://arakoo-ai.vercel.app/)
 
 ## ✨ Features
 

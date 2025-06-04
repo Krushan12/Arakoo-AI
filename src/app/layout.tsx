@@ -17,10 +17,27 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Task Board - Modern Task Management",
-  description: "A modern task management application to help you stay organized and productive",  icons: [
+  description: "A modern task management application to help you stay organized and productive",
+  metadataBase: new URL('https://arakoo-ai.vercel.app'),
+  alternates: {
+    canonical: '/',
+  },
+  icons: [
     { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
     { rel: 'icon', url: '/favicon.ico' },  // Fallback for older browsers
   ],
+  openGraph: {
+    type: 'website',
+    url: 'https://arakoo-ai.vercel.app',
+    title: 'Task Board - Modern Task Management',
+    description: 'A modern task management application to help you stay organized and productive',
+    siteName: 'Task Board',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Task Board - Modern Task Management',
+    description: 'A modern task management application to help you stay organized and productive',
+  },
 };
 
 export default function RootLayout({
