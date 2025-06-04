@@ -7,10 +7,12 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { Column } from './Column';
 import { Board as BoardType, Task } from '@/types';
+import { TaskCard } from './TaskCard';
 
 interface BoardProps {
   board: BoardType;
@@ -53,24 +55,39 @@ export function Board({ board, onUpdateTask, onEditTask }: BoardProps) {
 
     const task = activeColumn.tasks.find(t => t.id === active.id);
     if (!task) return;
-
-    // Update both columnId and status when dragging between columns
-    const getStatus = (columnId: string): Task['status'] => {
-      switch (columnId) {
-        case 'todo': return 'todo';
-        case 'in-progress': return 'in-progress';
-        case 'done': return 'done';
-        default: return 'todo';
-      }
-    };
-
-    onUpdateTask(task.id, {
-      columnId: overColumn.id,
-      status: getStatus(overColumn.id)
-    });
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      const activeColumn = board.columns.find(col => 
+        col.tasks.some(task => task.id === active.id)
+      );
+      const overColumn = board.columns.find(col => col.id === over.id);
+
+      if (!activeColumn || !overColumn) return;
+
+      const task = activeColumn.tasks.find(t => t.id === active.id);
+      if (!task) return;
+
+      const getStatus = (columnId: string): Task['status'] => {
+        switch (columnId) {
+          case 'todo': return 'todo';
+          case 'in-progress': return 'in-progress';
+          case 'done': return 'done';
+          default: return 'todo';
+        }
+      };
+
+      const newStatus = getStatus(overColumn.id);
+      
+      await onUpdateTask(task.id, {
+        columnId: overColumn.id,
+        status: newStatus
+      });
+    }
+
     setActiveTask(null);
   };
 
@@ -81,7 +98,7 @@ export function Board({ board, onUpdateTask, onEditTask }: BoardProps) {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="flex gap-6 p-1 overflow-x-auto pb-4">
         {board.columns.map((column) => (
           <Column
             key={column.id}
@@ -89,7 +106,15 @@ export function Board({ board, onUpdateTask, onEditTask }: BoardProps) {
             onEditTask={onEditTask}
           />
         ))}
-      </div>
+      </div>      <DragOverlay dropAnimation={null}>
+        {activeTask ? (
+          <TaskCard 
+            task={activeTask} 
+            onEdit={onEditTask} 
+            isDragging 
+          />
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }

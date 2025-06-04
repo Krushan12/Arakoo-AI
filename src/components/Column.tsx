@@ -13,12 +13,14 @@ export function Column({ column, onEditTask }: ColumnProps) {
     id: column.id,
   });
 
-  return (
-    <div className="flex-shrink-0 w-72 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
-      <div className="p-3 border-b border-gray-200 bg-white rounded-t-lg">
-        <h2 className="font-medium text-sm text-gray-900">{column.title}</h2>
+  return (    <div className="flex-shrink-0 w-80 bg-gray-50/50 rounded-xl shadow-sm border border-gray-200 backdrop-blur-sm">
+      <div className="p-4 border-b border-gray-200 bg-white/80 rounded-t-xl">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-gray-900">{column.title}</h2>
+          <span className="text-sm text-gray-500">{column.tasks.length} tasks</span>
+        </div>
       </div>
-      <div ref={setNodeRef} className="p-2 min-h-[200px]">
+      <div ref={setNodeRef} className="p-3 min-h-[200px]">
         <SortableContext
           items={column.tasks.map(task => task.id)}
           strategy={verticalListSortingStrategy}

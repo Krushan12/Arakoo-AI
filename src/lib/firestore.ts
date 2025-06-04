@@ -106,11 +106,15 @@ export const updateTask = async (
 
   try {
     const taskRef = doc(db, 'tasks', taskId);
-    await setDoc(taskRef, {
+    const updateData = {
       ...updates,
       userId,
       updatedAt: Date.now(),
-    }, { merge: true });
+      // Ensure status and columnId are always in sync
+      ...(updates.status && { columnId: updates.status }),
+      ...(updates.columnId && { status: updates.columnId })
+    };
+    await setDoc(taskRef, updateData, { merge: true });
     return true;
   } catch (error) {
     console.error('Error updating task:', error);

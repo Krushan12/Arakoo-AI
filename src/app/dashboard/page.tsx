@@ -83,10 +83,15 @@ export default function DashboardPage() {
   const handleUpdateTask = async (taskId: string, updates: Partial<Omit<Task, 'id' | 'createdAt' | 'userId'>>) => {
     if (!user) return;
     try {
-      await updateTask(user.uid, taskId, {
+      // Ensure status and columnId are in sync
+      const finalUpdates = {
         ...updates,
+        status: (updates.columnId || updates.status) as Task['status'],
+        columnId: (updates.status || updates.columnId) as Task['status'],
         updatedAt: Date.now(),
-      });
+      };
+
+      await updateTask(user.uid, taskId, finalUpdates);
       setIsDialogOpen(false);
       setEditingTask(undefined);
     } catch (error) {
@@ -97,19 +102,22 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 py-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl shadow-sm animate-fade-in">
               <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
 
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-semibold text-gray-900">Your Tasks</h1>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Your Tasks</h1>
+              <p className="text-sm text-gray-600 mt-1">Organize and track your tasks efficiently</p>
+            </div>
             <button
               onClick={() => setIsDialogOpen(true)}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
             >
               <PlusIcon className="h-5 w-5 mr-2" />
               New Task

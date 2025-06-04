@@ -7,9 +7,10 @@ import { useEffect, useState } from 'react';
 interface TaskCardProps {
   task: Task;
   onEdit: (task: Task) => void;
+  isDragging?: boolean;
 }
 
-export function TaskCard({ task, onEdit }: TaskCardProps) {
+export function TaskCard({ task, onEdit, isDragging }: TaskCardProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   const {
@@ -18,26 +19,25 @@ export function TaskCard({ task, onEdit }: TaskCardProps) {
     setNodeRef,
     transform,
     transition,
+    isDragging: isSortableDragging,
   } = useSortable({ id: task.id });
-
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    opacity: isSortableDragging ? 0 : 1,
   };
 
-  // Prevent hydration mismatch by only rendering after mount
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   const priorityColors = {
-    low: 'bg-blue-100 text-blue-600',
-    medium: 'bg-yellow-100 text-yellow-600',
-    high: 'bg-red-100 text-red-600',
+    low: 'bg-blue-50 text-blue-600 ring-1 ring-blue-200',
+    medium: 'bg-yellow-50 text-yellow-600 ring-1 ring-yellow-200',
+    high: 'bg-red-50 text-red-600 ring-1 ring-red-200',
   };
 
   if (!isMounted) {
-    return null; // or return a loading skeleton
+    return null;
   }
 
   return (
@@ -45,15 +45,23 @@ export function TaskCard({ task, onEdit }: TaskCardProps) {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      {...listeners}
-      className="group mb-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing border border-gray-100"
+      {...listeners}      className={`
+        group mb-3 bg-white rounded-xl shadow-sm
+        cursor-grab active:cursor-grabbing border border-gray-100 
+        ${isDragging
+          ? 'shadow-lg ring-2 ring-blue-100' 
+          : 'hover:shadow-lg hover:border-blue-100'
+        }
+      `}
     >
       <div className="p-4">
         <div className="flex justify-between items-start gap-2 mb-3">
-          <h3 className="text-sm font-medium text-gray-900">{task.title}</h3>
-          <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${priorityColors[task.priority]}`}>
-            {task.priority}
-          </span>
+          <h3 className="text-base font-semibold text-gray-900">{task.title}</h3>
+          <div className="flex gap-2">
+            <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${priorityColors[task.priority]} shadow-sm`}>
+              {task.priority}
+            </span>
+          </div>
         </div>
         <p className="text-sm text-gray-600 mb-4 line-clamp-2">{task.description}</p>
         <div className="flex items-center justify-between">
@@ -62,9 +70,9 @@ export function TaskCard({ task, onEdit }: TaskCardProps) {
               e.stopPropagation();
               onEdit(task);
             }}
-            className="flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-blue-600 invisible group-hover:visible hover:bg-blue-50 px-2 py-1 rounded-md transition-colors duration-200 cursor-pointer"
           >
-            <PencilIcon className="w-3 h-3" />
+            <PencilIcon className="w-3.5 h-3.5" />
             Edit
           </button>
           {task.assignee && (
