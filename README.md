@@ -114,13 +114,6 @@ A modern, real-time task management application built with Next.js, Firebase, an
   └── types/          # TypeScript type definitions
   ```
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](issues).
 
 ## 👏 Acknowledgments
 
