@@ -17,7 +17,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Task Board - Modern Task Management",
-  description: "A modern task management application to help you stay organized and productive",
+  description: "A modern task management application to help you stay organized and productive",  icons: [
+    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
+    { rel: 'icon', url: '/favicon.ico' },  // Fallback for older browsers
+  ],
 };
 
 export default function RootLayout({
